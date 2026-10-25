@@ -83,7 +83,27 @@ src/
 
 ## 部署
 
-SQLite 为文件数据库，需部署在文件持久的常驻机器上（不建议 Vercel 等无服务器平台）。详见 `doc/tech.md` 第 7 节：
+### 云端（推荐）：Vercel + Turso，免费
+
+本地 SQLite 文件不适合无服务器平台（文件系统临时），云端改用 libSQL 云数据库 Turso，代码按 `DATABASE_URL` 自动区分本地/云端：
+
+1. 注册 [Turso](https://turso.tech)，创建数据库，把连接串和认证 token 写入本地 `.env.turso`（已 gitignore）
+2. `npx tsx scripts/init-remote-db.ts` 建表；注入同样环境变量后 `npx prisma db seed` 写示例文章
+3. 注册 [Vercel](https://vercel.com)，Import GitHub 仓库，配置生产环境变量：
+
+| 变量 | 值 |
+|------|-----|
+| `DATABASE_URL` | Turso 连接串（`libsql://...`） |
+| `TURSO_AUTH_TOKEN` | Turso 认证 token |
+| `ADMIN_USERNAME` | 管理员账号 |
+| `ADMIN_PASSWORD_HASH` | bcrypt 密码哈希（`node scripts/set-password.js` 生成后取 `.env` 里的值） |
+| `SESSION_SECRET` | 随机 64 位十六进制（本地 `.env` 里的值） |
+
+4. Deploy 后即可访问；推送 GitHub 自动重新部署
+
+### 自托管
+
+SQLite 为文件数据库，需部署在文件持久的常驻机器上。详见 `doc/tech.md` 第 7 节：
 
 - **简单版**：云服务器安装 Node.js，`npm run build && npm start`，PM2 常驻
 - **规范版**：Docker 镜像 + 挂载数据库文件卷

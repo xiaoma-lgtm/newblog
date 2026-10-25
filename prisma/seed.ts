@@ -6,6 +6,7 @@ process.loadEnvFile();
 const prisma = new PrismaClient({
   adapter: new PrismaLibSql({
     url: process.env.DATABASE_URL ?? "file:./prisma/dev.db",
+    authToken: process.env.TURSO_AUTH_TOKEN || undefined,
   }),
 });
 

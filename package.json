@@ -2,13 +2,18 @@
   "name": "myblog",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=22.13"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
+    "@libsql/client": "^0.15.9",
     "@prisma/adapter-libsql": "^7.10.1",
     "@prisma/client": "^7.10.1",
     "@tailwindcss/typography": "^0.5.20",
